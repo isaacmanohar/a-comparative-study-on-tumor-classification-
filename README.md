@@ -29,9 +29,9 @@ A deep learning-powered Tumor Classification system for MRI and Ultrasound scans
 pip install -r requirements.txt
 ```
 
-### 2. Run the script
+### 2. Run the dashboard
 ```bash
-python tumor_classification.py
+streamlit run app.py
 ```
 
 ### 3. Outputs
@@ -43,23 +43,8 @@ All plots are saved to the `outputs/` folder:
 
 ---
 
-## Project Structure
-```
-mini project/
-├── tumor_classification.py   ← Main ML pipeline
-├── requirements.txt
-├── README.md
-└── outputs/                  ← Auto-created on first run
-    ├── model_comparison.png
-    ├── confusion_matrix.png
-    ├── roc_curve.png
-    └── feature_importance.png
-```
-
----
-
 ## Key Highlights
 - **Stratified 80-20 split** preserves class balance
 - **GridSearchCV (5-fold CV)** for hyperparameter tuning
-- **Best model selected** by F1-Score + Recall (critical for medical diagnosis)
-- **Bonus prediction function** — pass new feature values, get Benign/Malignant
+- **Best model selected** by F1-Score + Recall
+- **Explainable AI** — Grad-CAM heatmaps for tumor localization
