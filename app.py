@@ -191,28 +191,40 @@ html, body, [class*="css"] {
 .stSlider label { color: #475569 !important; font-size: 0.85rem !important; }
 
 /* ── Button ── */
-.stButton button {
-    background: linear-gradient(90deg, #0d9488, #0891b2);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 32px;
-    font-size: 1rem;
-    font-weight: 600;
-    width: 100%;
-    transition: opacity 0.2s, transform 0.15s;
-    box-shadow: 0 2px 6px rgba(13,148,136,0.2);
+.stButton button, .stDownloadButton button {
+    background: linear-gradient(90deg, #0d9488, #0891b2) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 10px 32px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    width: 100% !important;
+    transition: opacity 0.2s, transform 0.15s !important;
+    box-shadow: 0 2px 6px rgba(13,148,136,0.2) !important;
 }
-.stButton button:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,148,136,0.25); }
+.stButton button:hover, .stDownloadButton button:hover { 
+    opacity: 0.9 !important; 
+    transform: translateY(-1px) !important; 
+    box-shadow: 0 4px 12px rgba(13,148,136,0.25) !important; 
+}
 
 /* ── Divider ── */
 hr { border-color: #e2e8f0 !important; }
 
-/* ── Sidebar radio ── */
-[data-testid="stSidebar"] .stRadio > label {
-    font-size: 0.95rem !important;
-    font-weight: 600 !important;
+/* ── Metric styling ── */
+[data-testid="stMetricLabel"] {
+    color: #64748b !important;
+}
+[data-testid="stMetricValue"] {
     color: #0d9488 !important;
+    font-weight: 700 !important;
+}
+
+/* ── Input box styling ── */
+.stTextInput input {
+    color: #1e293b !important;
+    background-color: #f8fafc !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1243,7 +1255,11 @@ elif page == "🧠  MRI Analysis":
                             with colA:
                                 hot_pixels_mri = np.sum(heatmap_resized > 0.5)
                                 approx_area_mri = (hot_pixels_mri / (heatmap_resized.shape[0]*heatmap_resized.shape[1])) * 12.5
-                                st.metric("Estimated Tumor Area", f"{approx_area_mri:.1f} cm²" if "No Tumor" not in pred_label else "0.0 cm²")
+                                approx_radius_mri = np.sqrt(approx_area_mri / np.pi) if approx_area_mri > 0 else 0.0
+                                
+                                m1, m2 = st.columns(2)
+                                m1.metric("Estimated Tumor Area", f"{approx_area_mri:.1f} cm²" if "No Tumor" not in pred_label else "0.0 cm²")
+                                m2.metric("Estimated Radius", f"{approx_radius_mri:.2f} cm" if "No Tumor" not in pred_label else "0.00 cm")
                                 
                             with colB:
                                 pid_val_mri = st.text_input("Patient ID", value="PID-34091", key="pid_mri_input")
@@ -1483,7 +1499,11 @@ elif page == "🩺  Ultrasound Analysis":
                             with colA:
                                 hot_pixels = np.sum(heatmap_resized > 0.5)
                                 approx_area = (hot_pixels / (heatmap_resized.shape[0]*heatmap_resized.shape[1])) * 14.5
-                                st.metric("Estimated Tumor Area", f"{approx_area:.1f} cm²")
+                                approx_radius = np.sqrt(approx_area / np.pi) if approx_area > 0 else 0.0
+                                
+                                m1, m2 = st.columns(2)
+                                m1.metric("Estimated Tumor Area", f"{approx_area:.1f} cm²")
+                                m2.metric("Estimated Radius", f"{approx_radius:.2f} cm")
                                 
                             with colB:
                                 pid_val = st.text_input("Patient ID", value="PID-89104")
